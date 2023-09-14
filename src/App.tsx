@@ -19,9 +19,8 @@ function App() {
 		<>
 			{displayOppositeComponents(5).map((e, index) => (
 				<div
+					className='parentDiv'
 					style={{
-						display: 'flex',
-						justifyContent: 'space-around',
 						flexDirection: (index + 1) % 2 == 0 ? 'row-reverse' : 'row',
 					}}
 				>

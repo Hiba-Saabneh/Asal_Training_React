@@ -1,10 +1,4 @@
-.parent:nth-child(odd){
-    background-color: aqua;
-    height: 40vh;
-    flex-direction: row-reverse;
-}
-
-.parent:nth-child(even){
-    background-color: red;
-    height: 40vh;
+.parentDiv{
+display: flex;
+justify-content :space-around
 }
