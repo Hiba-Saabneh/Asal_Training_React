@@ -1,28 +1,35 @@
 import React from 'react'
 import InvertedApp from './components/invertComp/InvertedApp'
+import './App.css'
 
 function App() {
-	let paragragh =
+	const paragragh =
 		'	Lorem ipsum dolor sit amet consectetur adipisicing elit. Id debitis, quos, facilis natus temporibus accusantium et fugiat labore at nihil eius recusandae illo similique provident mollitia nam quod eos nisi quae doloribus eaque ipsa minus! Tenetur quod sint sed veniam omnis quam minima, maxime optio delectus modi officiis quibusdam fugit!'
-	let img = 'img/Image20230913120206.png'
+	const img = 'img/Image20230913120206.png'
+
 	function displayOppositeComponents(n: number) {
-		let components = []
-		let content = ''
-		let positionFlag = false
-		for (var i = 0; i < n; i++) {
-			positionFlag = !positionFlag
-			components.push(
-				<InvertedApp
-					key={i}
-					paragragh={paragragh}
-					img={img}
-					positionFlag={positionFlag}
-				/>
-			)
-		}
+		let components = Array.from({ length: n }, (_, index) => (
+			<InvertedApp key={index} paragragh={paragragh} img={img} />
+		))
+
 		return components
 	}
-	return <>{displayOppositeComponents(5)}</>
+
+	return (
+		<>
+			{displayOppositeComponents(5).map((e, index) => (
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-around',
+						flexDirection: (index + 1) % 2 == 0 ? 'row-reverse' : 'row',
+					}}
+				>
+					{e}
+				</div>
+			))}
+		</>
+	)
 }
 
 export default App
