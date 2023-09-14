@@ -1,0 +1,18 @@
+.container {
+display: flex;
+justify-content: space-between;
+}
+
+.container:nth-child(even){
+    flex-direction: row-reverse;
+}
+
+.data-image {
+    width: 200px;
+    height: 200px;
+}
+
+ .data-parag {
+    width: 200px;
+   color: blue ;
+}
