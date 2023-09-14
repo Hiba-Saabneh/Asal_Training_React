@@ -12,7 +12,7 @@ const InvertedApp = (props: InvertedAppProps) => {
 		<>
 			<img src={img} alt='' width='300px' height='250px' />
 
-			<p style={{ width: '300px', border: '1px solid black' }}>{paragragh}</p>
+			<p>{paragragh}</p>
 		</>
 	)
 }
