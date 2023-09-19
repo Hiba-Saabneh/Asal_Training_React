@@ -1,9 +1,25 @@
-.child{
-display: flex;
-justify-content :space-around
+.container{
+    display: flex;
 }
 
-.parentDiv .child:nth-child(even){
-    flex-direction: row-reverse;
+
+.leftSide{
+    width:50%;
+}
+.rightSide{
+    margin-left: auto;
+
+    width: 50%;
+    z-index: 1111111111111111111111;
+
+}
+
+.container h2{
+    text-align: center;
+}
+
+.search {
+    margin: auto;
+    width:30%;
 
 }
