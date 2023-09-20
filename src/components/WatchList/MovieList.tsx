@@ -10,31 +10,21 @@ interface Post {
 }
 interface WatchListProps {
 	posts: Post[]
-	count: number
-	seCount: Dispatch<SetStateAction<number>>
-	watchedMovie: Post[]
-	setWatchedMovie: Dispatch<SetStateAction<Post[]>>
-	setPosts: Dispatch<SetStateAction<Post[]>>
+	postersCount: number
+	setPostersCount: Dispatch<SetStateAction<number>>
+	isWatched: boolean
+	AddToWatchedList: (movieFromWatchtToWatchedList: Post) => void
+	removMovie: (movieFromWatchtToWatchedList: Post) => void
 }
-const WatchList = (props: WatchListProps) => {
-	const { posts, count, seCount, watchedMovie, setWatchedMovie, setPosts } =
-		props
-
-	const AddToWatchedList = (ele: Post) => {
-		setWatchedMovie((prevWatchedMovie) => {
-			const isAlreadyWatched = prevWatchedMovie.some((m) => m.id === ele.id)
-
-			if (!isAlreadyWatched) {
-				return [...prevWatchedMovie, ele]
-			}
-
-			return prevWatchedMovie
-		})
-		setPosts((prevPosts) => {
-			const newPosts = prevPosts.filter((p) => p.id !== ele.id)
-			return [...newPosts]
-		})
-	}
+const MovieList = (props: WatchListProps) => {
+	const {
+		posts,
+		postersCount,
+		setPostersCount,
+		isWatched,
+		AddToWatchedList,
+		removMovie,
+	} = props
 
 	useEffect(() => {
 		// Add a scroll event listener
@@ -53,7 +43,7 @@ const WatchList = (props: WatchListProps) => {
 		// Check if the user has scrolled to the end of the content
 		if (windowHeight + scrollTop >= documentHeight - 100) {
 			// You can adjust the 100 value for a more accurate trigger point
-			seCount((prevCount) => prevCount + 10) // Update seCount when reaching the end
+			setPostersCount((prevCount) => prevCount + 10) // Update seCount when reaching the end
 		}
 	}
 
@@ -62,7 +52,7 @@ const WatchList = (props: WatchListProps) => {
 			<div>
 				{posts.map(
 					(ele, index) =>
-						index < count && (
+						index < postersCount && (
 							<div key={ele.id} className='poster'>
 								<img src={ele.poster} alt={ele.title} />
 								<div className='info'>
@@ -72,8 +62,15 @@ const WatchList = (props: WatchListProps) => {
 									{ele.genres.map((gen, index) => (
 										<span key={index}>{gen}</span>
 									))}
-									<button className='btn' onClick={() => AddToWatchedList(ele)}>
-										add to Watched list
+									<button
+										className='btn'
+										onClick={
+											!isWatched
+												? () => AddToWatchedList(ele)
+												: () => removMovie(ele)
+										}
+									>
+										{!isWatched ? 'add to watched ' : 'remove'}
 									</button>
 								</div>
 							</div>
@@ -84,4 +81,4 @@ const WatchList = (props: WatchListProps) => {
 	)
 }
 
-export default WatchList
+export default MovieList

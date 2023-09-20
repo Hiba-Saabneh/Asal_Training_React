@@ -7,8 +7,8 @@ interface SearchbarProps {
 const Searchbar = (props: SearchbarProps) => {
 	const { searchMovie } = props
 	const [Movie, setMovie] = useState('')
-	const search = (ele: React.ChangeEvent<HTMLInputElement>) => {
-		const value = ele.target.value
+	const search = (movieWords: React.ChangeEvent<HTMLInputElement>) => {
+		const value = movieWords.target.value
 		setMovie(value)
 		searchMovie(value)
 		console.log(searchMovie)
