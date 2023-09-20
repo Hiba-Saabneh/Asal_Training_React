@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import axios from 'axios'
 import WatchList from './components/WatchList/WatchList'
 import WatchedList from './components/WatcedList/WatchedList'
 import Searchbar from './components/Searchbar/Searchbar'
@@ -21,19 +20,21 @@ function App() {
 	const [watchedCount, setWatchedCount] = useState(10)
 	const [movieName, setMovieName] = useState('')
 
-	const removMovie = (id: string) => {
-		setPosts((e) => e.filter((p) => p.id !== id))
-		setWatchedMovie((e) => e.filter((p) => p.id !== id))
+	const removMovie = (ele: Post) => {
+		setWatchedMovie((e) => e.filter((p) => p.id !== ele.id))
+		setPosts((prevPosts) => [ele, ...prevPosts])
 	}
 
 	useEffect(() => {
 		const getPosts = async () => {
-			let response = await axios.get(
+			const response = await fetch(
 				'https://mocki.io/v1/26cead06-d092-41d0-9317-d964faa232ee'
 			)
-			const responseData: Post[] = response.data
+
+			const responseData = await response.json()
 			setPosts(responseData)
 		}
+
 		getPosts()
 	}, [])
 
@@ -43,20 +44,20 @@ function App() {
 	}
 
 	const ShowWatchList = () => {
-		if (movieName == null) {
+		if (movieName === '') {
 			return posts
 		}
 		return posts.filter((post) => post.title.toLowerCase().includes(movieName))
 	}
-
 	const ShowWatchedList = () => {
-		if (movieName == null) {
-			return posts
+		if (movieName === '') {
+			return watchedMovie
 		}
-		return posts.filter((watchedMovie) =>
-			watchedMovie.title.toLowerCase().includes(movieName)
+		return watchedMovie.filter((post) =>
+			post.title.toLowerCase().includes(movieName)
 		)
 	}
+
 	return (
 		<>
 			<div className='search'>
@@ -71,6 +72,7 @@ function App() {
 						watchedMovie={watchedMovie}
 						setWatchedMovie={setWatchedMovie}
 						seCount={setWatchCount}
+						setPosts={setPosts}
 					/>
 				</div>
 				<div className='rightSide'>

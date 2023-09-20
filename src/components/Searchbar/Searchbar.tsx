@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../WatchList/WatchList.module.css'
+import '../WatchList/WatchList.css'
 
 interface SearchbarProps {
 	searchMovie: (value: string) => void
