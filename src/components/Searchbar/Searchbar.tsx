@@ -18,7 +18,7 @@ const Searchbar = (props: SearchbarProps) => {
 			<input
 				type='text'
 				placeholder='search'
-				onChange={(e) => search(e)}
+				onChange={(event) => search(event)}
 				value={Movie}
 			/>
 		</div>

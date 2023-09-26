@@ -9,31 +9,15 @@ interface Post {
 	genres: []
 }
 interface WatchListProps {
-	posts: Post[]
+	movies: Post[]
 	postersCount: number
 	setPostersCount: Dispatch<SetStateAction<number>>
 	isWatched: boolean
-	AddToWatchedList: (movieFromWatchtToWatchedList: Post) => void
-	removMovie: (movieFromWatchtToWatchedList: Post) => void
+	AddOrRemove: (AddMovieOrRemove: Post, Add: boolean) => void
 }
 const MovieList = (props: WatchListProps) => {
-	const {
-		posts,
-		postersCount,
-		setPostersCount,
-		isWatched,
-		AddToWatchedList,
-		removMovie,
-	} = props
-
-	useEffect(() => {
-		// Add a scroll event listener
-		window.addEventListener('scroll', handleScroll)
-		return () => {
-			// Remove the scroll event listener when the component unmounts
-			window.removeEventListener('scroll', handleScroll)
-		}
-	}, [])
+	const { movies, postersCount, setPostersCount, isWatched, AddOrRemove } =
+		props
 
 	const handleScroll = () => {
 		const windowHeight = window.innerHeight
@@ -46,29 +30,29 @@ const MovieList = (props: WatchListProps) => {
 			setPostersCount((prevCount) => prevCount + 10) // Update seCount when reaching the end
 		}
 	}
+	useEffect(() => {
+		// Add a scroll event listener
+		window.addEventListener('scroll', handleScroll)
+	}, [])
 
 	return (
 		<>
 			<div>
-				{posts.map(
-					(ele, index) =>
+				{movies.map(
+					(poster, index) =>
 						index < postersCount && (
-							<div key={ele.id} className='poster'>
-								<img src={ele.poster} alt={ele.title} />
+							<div key={poster.id} className='poster'>
+								<img src={poster.poster} alt={poster.title} />
 								<div className='info'>
 									<p>#({index + 1})</p>
-									<h2>{ele.title}</h2>
-									<p>{ele.overview}</p>
-									{ele.genres.map((gen, index) => (
+									<h2>{poster.title}</h2>
+									<p>{poster.overview}</p>
+									{poster.genres.map((gen, index) => (
 										<span key={index}>{gen}</span>
 									))}
 									<button
 										className='btn'
-										onClick={
-											!isWatched
-												? () => AddToWatchedList(ele)
-												: () => removMovie(ele)
-										}
+										onClick={() => AddOrRemove(poster, !isWatched)}
 									>
 										{!isWatched ? 'add to watched ' : 'remove'}
 									</button>

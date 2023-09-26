@@ -19,33 +19,37 @@ function App() {
 	const [watchedCount, setWatchedCount] = useState(10)
 	const [movieName, setMovieName] = useState('')
 
-	// add movies to watchedlist
-	const AddToWatchedList = (movieFromWatchtToWatchedList: Post) => {
-		setWatchedMovie((prevWatchedMovie) => {
-			const isAlreadyWatched = prevWatchedMovie.some(
-				(m) => m.id === movieFromWatchtToWatchedList.id
-			)
-
-			if (!isAlreadyWatched) {
-				return [...prevWatchedMovie, movieFromWatchtToWatchedList]
-			}
-
-			return prevWatchedMovie
-		})
-		setPosts((prevPosts) => {
-			const newPosts = prevPosts.filter(
-				(p) => p.id !== movieFromWatchtToWatchedList.id
-			)
-			return [...newPosts]
-		})
+	//search based on title of movie
+	const searchMovie = (MovieTitleLetters: string) => {
+		setMovieName(MovieTitleLetters)
 	}
 
-	// remove the movie from watched list to watch list
-	const removMovie = (movieItWillBeRemoved: Post) => {
-		setWatchedMovie((e) =>
-			e.filter((post) => post.id !== movieItWillBeRemoved.id)
-		)
-		setPosts((prevPosts) => [movieItWillBeRemoved, ...prevPosts])
+	// add movies to watchedlist
+	const AddOrRemove = (AddMovieOrRemove: Post, Add: boolean) => {
+		if (Add) {
+			setWatchedMovie((prevWatchedMovie) => {
+				const isAlreadyWatched = prevWatchedMovie.some(
+					(movieElement) => movieElement.id === AddMovieOrRemove.id
+				)
+
+				if (!isAlreadyWatched) {
+					return [...prevWatchedMovie, AddMovieOrRemove]
+				}
+
+				return prevWatchedMovie
+			})
+			setPosts((prevPosts) => {
+				const newPosts = prevPosts.filter(
+					(postElement) => postElement.id !== AddMovieOrRemove.id
+				)
+				return [...newPosts]
+			})
+		} else {
+			setWatchedMovie((movie) =>
+				movie.filter((post) => post.id !== AddMovieOrRemove.id)
+			)
+			setPosts((prevPosts) => [AddMovieOrRemove, ...prevPosts])
+		}
 	}
 	// give data from API
 	useEffect(() => {
@@ -60,19 +64,6 @@ function App() {
 
 		getPosts()
 	}, [])
-	//search based on title of movie
-	const searchMovie = (MovieTitleLetters: string) => {
-		setMovieName(MovieTitleLetters.toLowerCase())
-	}
-	//display posters on watch and watched list
-	const ShowList = (moviesList: Post[]) => {
-		if (movieName === '') {
-			return moviesList
-		}
-		return moviesList.filter((post) =>
-			post.title.toLowerCase().includes(movieName)
-		)
-	}
 
 	return (
 		<>
@@ -83,9 +74,10 @@ function App() {
 				<div className='leftSide'>
 					<h2>Watch list</h2>
 					<MovieList
-						AddToWatchedList={AddToWatchedList}
-						removMovie={removMovie}
-						posts={ShowList(posts)}
+						AddOrRemove={AddOrRemove}
+						movies={posts.filter((post) =>
+							post.title.toLowerCase().includes(movieName.toLowerCase())
+						)}
 						postersCount={watchCount}
 						setPostersCount={setWatchCount}
 						isWatched={false}
@@ -94,9 +86,10 @@ function App() {
 				<div className='rightSide'>
 					<h2>Watched list</h2>
 					<MovieList
-						AddToWatchedList={AddToWatchedList}
-						removMovie={removMovie}
-						posts={ShowList(watchedMovie)}
+						AddOrRemove={AddOrRemove}
+						movies={watchedMovie.filter((post) =>
+							post.title.toLowerCase().includes(movieName.toLowerCase())
+						)}
 						postersCount={watchedCount}
 						setPostersCount={setWatchedCount}
 						isWatched={true}
