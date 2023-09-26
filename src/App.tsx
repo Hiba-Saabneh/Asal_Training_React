@@ -75,9 +75,8 @@ function App() {
 					<h2>Watch list</h2>
 					<MovieList
 						AddOrRemove={AddOrRemove}
-						movies={posts.filter((post) =>
-							post.title.toLowerCase().includes(movieName.toLowerCase())
-						)}
+						movies={posts}
+						movieName={movieName}
 						postersCount={watchCount}
 						setPostersCount={setWatchCount}
 						isWatched={false}
@@ -87,9 +86,8 @@ function App() {
 					<h2>Watched list</h2>
 					<MovieList
 						AddOrRemove={AddOrRemove}
-						movies={watchedMovie.filter((post) =>
-							post.title.toLowerCase().includes(movieName.toLowerCase())
-						)}
+						movies={watchedMovie}
+						movieName={movieName}
 						postersCount={watchedCount}
 						setPostersCount={setWatchedCount}
 						isWatched={true}
