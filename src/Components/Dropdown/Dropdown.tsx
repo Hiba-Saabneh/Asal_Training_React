@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Dropdown.css'
-import { menuItems } from '.././Items/Items'
+import { menuItems } from '../Items/Items'
 
 interface Items {
 	value: string
@@ -12,60 +12,66 @@ const Dropdown = () => {
 	const [itemsThatShowsinDropDownList, setItemsThatShowsinDropDownList] =
 		useState<Items[]>(menuItems)
 	const [selectedItemIndex, setSelectedItemIndex] = useState(-1)
-	const dropdownListRef = useRef<HTMLUListElement>(null)
 
 	//function that visible dropdown list when click in search bar
 	const dropDownListVisibilty = () => {
-		setShowDropDownList(!showDropdownList)
+		if (selectedItemIndex < 0) {
+			setShowDropDownList(!showDropdownList)
+			if (!showDropdownList) {
+				document.getElementById('dropdownMenu_input')?.blur()
+			} else {
+				document.getElementById('dropdownMenu_input')?.focus()
+			}
+		}
 	}
+
 	//function to select input value when click on list Item and the hide the dropdown list after select an item
 	const selectInput = (menuItem: Items) => {
 		setInputValue(menuItem.value)
-		setShowDropDownList(true)
+		// setShowDropDownList(true)
+		document.getElementById('dropdownMenu_input')?.focus()
 	}
-	// Function that scrolls to the selected item
-	const scrollToSelectedItem = () => {
-		if (selectedItemIndex >= 0 && dropdownListRef.current) {
-			const item = dropdownListRef.current.childNodes[selectedItemIndex]
 
-			if (item instanceof HTMLElement) {
-				item.scrollIntoView({
-					behavior: 'auto',
-					block: 'center',
-				})
-			}
+	// Function that scrolls to the selected item
+	const scrollToSelectedItem = (index: number) => {
+		let ElemntToFocus = document.getElementById(`#${index}`)
+		if (ElemntToFocus) {
+			ElemntToFocus.focus()
+			ElemntToFocus.scrollIntoView({ behavior: 'auto', block: 'center' })
 		}
 	}
 
-	// Function that selects an item and scrolls to it
-	const selectItem = (index: number) => {
-		setSelectedItemIndex(index)
-		scrollToSelectedItem()
-	}
 	//use keyboard to select an item from dropdown list
 	useEffect(() => {
-		const handleWheel = (e: WheelEvent) => {
-			//ensure that the dropdown list is not null in if condition
-			if (dropdownListRef.current) {
-				// Calculate the new scrollTop value based on wheel delta
-				let newScrollTop = dropdownListRef.current.scrollTop + e.deltaY
-				dropdownListRef.current.scrollTop = newScrollTop
-			}
+		// Function that selects an item and scrolls to it
+		const selectItem = (index: number) => {
+			setSelectedItemIndex(index)
+			scrollToSelectedItem(index)
 		}
 		//make event handeler when press keyboard
 		const handleKeyDown = (e: KeyboardEvent) => {
+			const dropdownMenu_input = document.getElementById('dropdownMenu_input')
 			if (
 				e.key === 'ArrowDown' &&
-				selectedItemIndex < itemsThatShowsinDropDownList.length - 1
+				selectedItemIndex <= itemsThatShowsinDropDownList.length - 1
 			) {
-				selectItem(selectedItemIndex + 1)
+				dropdownMenu_input?.blur()
+				if (selectedItemIndex === itemsThatShowsinDropDownList.length - 1) {
+					selectItem(0)
+					console.log('arrive to last element')
+				} else {
+					selectItem(selectedItemIndex + 1)
+				}
+
 				console.log('the index of the item arrowDOwn' + selectedItemIndex)
 			} else if (e.key === 'ArrowUp' && selectedItemIndex > 0) {
+				dropdownMenu_input?.blur()
 				selectItem(selectedItemIndex - 1)
 				console.log('the index of the item arrow up' + selectedItemIndex)
 			} else if (e.key === 'Enter' && selectedItemIndex >= 0) {
 				console.log('the index of the item enter' + selectedItemIndex)
 				selectInput(itemsThatShowsinDropDownList[selectedItemIndex])
+				setSelectedItemIndex(-1)
 			} else if (e.key === 'Escape') {
 				//to close dropDownlist
 				console.log('the index of the item esc')
@@ -75,67 +81,71 @@ const Dropdown = () => {
 		if (showDropdownList === false) {
 			console.log(selectedItemIndex)
 			document.addEventListener('keydown', handleKeyDown)
-			document.addEventListener('wheel', handleWheel as EventListener)
-		} else {
-			setSelectedItemIndex(-1)
 		}
-		//in this line we remove the event listener for repeated execution line issuses make Cleanup when the func  is unamount
+		//in this line we remove the event listener for repeated execution line issuses make Cleanup when the func  is unmount
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown)
-			document.removeEventListener('wheel', handleWheel as EventListener)
 		}
-	}, [showDropdownList, selectedItemIndex])
+	}, [showDropdownList, selectedItemIndex, itemsThatShowsinDropDownList])
 
 	// return items that fit of input value just when we make changes in input value
-	useEffect(() => {
+	const search = (value: string) => {
 		setItemsThatShowsinDropDownList((prevMenuItems) => {
-			if (inputvalue === '') return menuItems
+			if (value === '') return menuItems
 			else {
 				return menuItems.filter(
 					(items) =>
-						items.text.toLowerCase().includes(inputvalue.toLowerCase()) ||
-						items.value.toLowerCase().includes(inputvalue.toLowerCase())
+						items.text.toLowerCase().includes(value.toLowerCase()) ||
+						items.value.toLowerCase().includes(value.toLowerCase())
 				)
 			}
 		})
-	}, [inputvalue])
+	}
+
 	return (
 		<>
-			<div className='dropdown' onClick={dropDownListVisibilty}>
+			<div className='dropdown'>
 				<input
+					id='dropdownMenu_input'
 					type='text'
 					value={inputvalue}
-					onChange={(event) => setInputValue(event.target.value)}
+					onChange={(event) => {
+						setInputValue(event.target.value)
+						setShowDropDownList(false)
+						setSelectedItemIndex(-1)
+						search(event.target.value)
+					}}
+					onClick={dropDownListVisibilty}
 				/>
-				<i className='fa-solid fa-angle-down'></i>
+				<i
+					className='fa-solid fa-angle-down'
+					onClick={() => {
+						setShowDropDownList(!showDropdownList)
+						setSelectedItemIndex(-1)
+					}}
+				></i>
 			</div>
 			<ul
-				ref={dropdownListRef}
 				style={{
 					display: showDropdownList ? 'none' : 'block',
-					height:
-						itemsThatShowsinDropDownList.length < 5
-							? itemsThatShowsinDropDownList.length == 0
-								? '5vh'
-								: `${itemsThatShowsinDropDownList.length * 6}vh`
-							: '25vh',
 				}}
 				className='dropdown_list'
 			>
-				{itemsThatShowsinDropDownList.length > 0 ? (
+				{itemsThatShowsinDropDownList.length ? (
 					itemsThatShowsinDropDownList.map((menuItem, index) => (
 						<li
 							onClick={() => selectInput(menuItem)}
-							key={menuItem.value}
+							key={index}
 							style={{
 								background: selectedItemIndex === index ? 'aliceblue' : '',
 							}}
+							id={`#${index}`}
 						>
 							{menuItem.text} ({menuItem.value})
 						</li>
 					))
 				) : (
-					<span> not found</span>
+					<span>not found</span>
 				)}
 			</ul>
 		</>
