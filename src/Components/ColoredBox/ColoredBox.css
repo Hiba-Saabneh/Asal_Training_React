@@ -1,0 +1,97 @@
+/* linear-gradient(to left, green, blue, red); */
+.header{
+    background:linear-gradient(to left, green, blue, red);
+    width: 40%;
+    margin: auto;
+    font-size: 20px;
+    color: rgb(255, 254, 251);
+    border-radius: 10px;
+}
+.header1{
+    margin-top: 5%;
+    height: 60vh;
+}
+
+h1{
+    margin-left: 20px;
+}
+.correct{
+    padding-top: 20%;
+}
+.wrongRounds{
+    font-size:25px;
+    height: 10vh;
+    display: flex;
+    justify-content: space-evenly;
+
+}
+.btnHeader{
+    height: 20vh;
+    align-items: end;
+    display: flex;
+    justify-content: center;
+}
+.tryBtn{
+    cursor: pointer;
+    width:20%;
+    padding: 10px 3px;
+    border-radius: 5px;
+    background-color: rgba(226, 43, 186, 0.836);
+    color: white;
+    border: 1px solid gray;
+}
+.colorBox{
+    background: black;
+    color:aliceblue;
+    width: 25%;
+    height: 25vh;
+    display: flex;
+    align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  box-shadow: 10px 10px 5px #e0dcdc;
+  margin: auto;
+  margin-top:5%;
+  font-size: 20px;
+}
+.btnsSpace{
+    display: flex;
+    width:60%;
+    margin: auto;
+    margin-top: 10%;
+    justify-content: space-evenly;
+}
+.btns {
+    font-size: 18px;
+color: white;
+border: 1px solid rgb(230, 219, 219);
+width:100px;
+height:100px;
+border-radius: 50%;
+cursor: pointer;
+transition: transform 0.02s;
+
+}
+.btns:nth-child(1){
+background-color: red;
+}
+.btns:nth-child(2){
+    background-color: blue;
+}
+.btns:nth-child(3){
+        background-color: green;
+}
+.btns:hover{
+    transform: scale(1.02);
+    border-color: yellow;
+    box-shadow: 5px 5px 5px rgba(255, 255, 0, 0.795);
+}
+
+
+.show{
+    display: block;
+
+}
+.hide{
+    display: none;
+}

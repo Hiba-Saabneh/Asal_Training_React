@@ -1,11 +1,11 @@
 import React from 'react'
 import './App.css'
+import ColoredBox from './Components/ColoredBox/ColoredBox'
 
-import Dropdown from './Components/Dropdown/Dropdown'
 function App() {
 	return (
 		<>
-			<Dropdown />
+			<ColoredBox />
 		</>
 	)
 }
