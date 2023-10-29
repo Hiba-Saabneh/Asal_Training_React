@@ -2,48 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './ColoredBox.css'
 
 const ColoredBox = () => {
-	const [randomColor, setRandomColor] = useState(getRandomColor)
-	const [arrayOfColors, setArrayOfColors] = useState(
-		shuffleArray(getColorSet(randomColor))
-	)
-	const [wrongGuess, setwrongGuess] = useState<(string | number)[]>([])
-	const [round, setRound] = useState(1)
-	const [endOfGame, setEndOFGAme] = useState(false)
-	console.log(randomColor)
-	console.log(wrongGuess)
-
-	//start new arounds of game
-	function startNewGame() {
-		setEndOFGAme(false)
-		setRound(1)
-		setwrongGuess([])
-		setRandomColor(getRandomColor)
-		setArrayOfColors(shuffleArray(getColorSet(randomColor)))
-	}
-	//make new color for coloredBox with new color buttons
-	function getNewRound(guessColor: string) {
-		if (guessColor !== randomColor) {
-			setwrongGuess((prevGuess) => {
-				if (prevGuess.length) {
-					return [...prevGuess, round, guessColor]
-				}
-				return [round, guessColor]
-			})
-		}
-		if (round !== 5) {
-			setRound(round + 1)
-			setRandomColor(getRandomColor)
-		} else {
-			setEndOFGAme(true)
-		}
-	}
-	//to randomize the colors in thre cloros array
-	function shuffleArray(arrayOfColors: string[]) {
-		return arrayOfColors.sort(() => Math.random() - 0.5)
-	}
-
 	//to give the random color of the colored box
-	function getRandomColor() {
+	const getRandomColor = () => {
 		// Generate random values for red, green, and blue to give random color in rgb .
 		const red = Math.floor(Math.random() * 256)
 		const green = Math.floor(Math.random() * 256)
@@ -57,8 +17,13 @@ const ColoredBox = () => {
 		return hexColor
 	}
 
+	//to randomize the colors in thre cloros array
+	const shuffleArray = (arrayOfColors: string[]) => {
+		return arrayOfColors.sort(() => Math.random() - 0.5)
+	}
+
 	// give the color set of buttons randomly
-	function getColorSet(randomColor: string) {
+	const getColorSet = (randomColor: string) => {
 		let arrayOfColors = [randomColor]
 		while (true) {
 			let color = getRandomColor()
@@ -70,6 +35,61 @@ const ColoredBox = () => {
 		}
 		return arrayOfColors
 	}
+
+	//start new arounds of game
+	const startNewGame = () => {
+		setEndOFGAme(false)
+		setRound(1)
+		setallRoundsGuessess([])
+		setRandomColor(getRandomColor)
+		setArrayOfColors(shuffleArray(getColorSet(randomColor)))
+		setWrongRounds([])
+	}
+	//make new color for coloredBox with new color buttons
+	const getNewRound = (guessColor: string) => {
+		setallRoundsGuessess((prevGuess) => {
+			if (prevGuess.length) {
+				return [...prevGuess, round, guessColor]
+			}
+			return [round, guessColor]
+		})
+
+		setWrongRounds((preRound) => {
+			let wrongGuess
+			if (guessColor !== randomColor) {
+				wrongGuess = true
+			} else {
+				wrongGuess = false
+			}
+
+			if (preRound.length) {
+				return [...preRound, wrongGuess]
+			}
+			return [wrongGuess]
+		})
+
+		if (round !== 5) {
+			setRound(round + 1)
+			setRandomColor(getRandomColor)
+		} else {
+			setEndOFGAme(true)
+		}
+	}
+
+	const [randomColor, setRandomColor] = useState(getRandomColor)
+	const [arrayOfColors, setArrayOfColors] = useState(
+		shuffleArray(getColorSet(randomColor))
+	)
+	const [allRoundsGuessess, setallRoundsGuessess] = useState<
+		(string | number)[]
+	>([])
+	const [round, setRound] = useState(1)
+	const [endOfGame, setEndOFGAme] = useState(false)
+	const [wrongRounds, setWrongRounds] = useState<boolean[]>([])
+	console.log(randomColor)
+	console.log(allRoundsGuessess)
+	console.log(wrongRounds)
+
 	useEffect(() => {
 		setArrayOfColors(shuffleArray(getColorSet(randomColor)))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,17 +116,23 @@ const ColoredBox = () => {
 					</div>
 				</div>
 				<div className={`result ${endOfGame ? 'displayBlock' : 'displayNone'}`}>
-					{wrongGuess.length ? (
+					{allRoundsGuessess.length ? (
 						<>
 							<div className='wrongPart'>
 								<h2 className='wrong'>Try guessing again</h2>
 								<div className='wrongAnswers'>
-									{wrongGuess.map((guess, index) =>
+									{allRoundsGuessess.map((guess, index) =>
 										(index + 1) % 2 !== 0 ? (
 											<span key={index}>Round #{guess}: </span>
 										) : (
 											<>
-												<span key={index}> {guess} is wrong color</span>
+												<span key={index} className='capetlize'>
+													{' '}
+													{guess}{' '}
+													{wrongRounds[Math.floor(index / 2)]
+														? 'is wrong color'
+														: 'is correct color'}
+												</span>
 												<br></br>
 											</>
 										)
