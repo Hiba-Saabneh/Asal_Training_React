@@ -15,7 +15,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "typescript": "^5.2.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^3.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -43,6 +43,8 @@
     ]
   },
   "devDependencies": {
+    "@types/css-modules": "^1.0.3",
+    "@types/webpack": "^5.28.2",
     "@typescript-eslint/parser": "^6.7.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-react-app": "7.0.1",
